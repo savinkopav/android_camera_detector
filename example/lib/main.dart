@@ -72,16 +72,14 @@ class _HomePageState extends State<HomePage> {
 
     try {
       hasCamera = await _detectorProvider.hasAvailableCamera();
-    } catch (e) {
-      if (e is PlatformException && e.message != null && e.message!.contains('has_no_available_camera')) {
-        if (context.mounted) await _showInfoDialog(context, 'Has no camera', 'Your device has no hardware camera, please check your phone');
-      }
-    }
+    } catch (_) {}
 
     if (!context.mounted) return;
 
+    if (!hasCamera) await _showInfoDialog(context, 'Has no camera', 'Your device has no hardware camera, please check your phone');
+
     setState(() {
-      isLoading= false;
+      isLoading = false;
     });
   }
 
@@ -89,27 +87,27 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.greenAccent,
-          title: const Text('Camera detector app'),
+      appBar: AppBar(
+        backgroundColor: Colors.greenAccent,
+        title: const Text('Camera detector app'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (!isLoading) Text('hasCamera: $hasCamera'),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: !isLoading ? MaterialButton(
+                color: Colors.greenAccent,
+                onPressed: () => checkCamera(context),
+                child: const Text('Check camera'),
+              ) : const CircularProgressIndicator(),
+            )
+          ],
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('hasCamera: $hasCamera'),
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: !isLoading ? MaterialButton(
-                  color: Colors.greenAccent,
-                  onPressed: () => checkCamera(context),
-                  child: const Text('Check camera'),
-                ) : const CircularProgressIndicator(),
-              )
-            ],
-          ),
-        ),
-      );
+      ),
+    );
   }
 
   Future<void> _showInfoDialog(BuildContext context, String title, String content) async {

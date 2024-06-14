@@ -6,4 +6,6 @@ abstract class AndroidCameraDetectorApi {
   @async
   bool hasAvailableCamera();
 
+  void dispose();
+
 }
