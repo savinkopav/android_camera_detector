@@ -1,6 +1,6 @@
 # android_camera_detector
 
-A new Flutter plugin project.
+Simple Flutter plugin project.
 
 ## Getting Started
 
