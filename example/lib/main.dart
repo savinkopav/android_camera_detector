@@ -65,18 +65,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   checkCamera(BuildContext context) async {
+    hasCamera = false;
+
     setState(() {
       isLoading = true;
-      hasCamera = false;
     });
 
     try {
       hasCamera = await _detectorProvider.hasAvailableCamera();
-    } catch (_) {}
+      if (!context.mounted) return;
+      if (!hasCamera) await _showInfoDialog(context, 'Has no camera', 'Your device has no hardware camera');
 
-    if (!context.mounted) return;
-
-    if (!hasCamera) await _showInfoDialog(context, 'Has no camera', 'Your device has no hardware camera, please check your phone');
+    } catch (e) {
+      if (!context.mounted) return;
+      if (e is PlatformException && e.message == "CameraServiceIsUnavailable") {
+        await _showInfoDialog(context, 'Camera service error', 'CameraServiceIsUnavailable');
+      }
+    }
 
     setState(() {
       isLoading = false;

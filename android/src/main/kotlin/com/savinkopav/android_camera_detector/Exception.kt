@@ -1,3 +1,3 @@
 package com.savinkopav.android_camera_detector
 
-class HasNoAvailableCameraException(message: String? = null): Exception(message)
+class CameraServiceException(message: String? = null): Exception(message)

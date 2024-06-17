@@ -8,24 +8,18 @@ import io.flutter.plugin.common.BasicMessageChannel
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MessageCodec
 import io.flutter.plugin.common.StandardMessageCodec
-import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
-
-private fun wrapResult(result: Any?): List<Any?> {
-  return listOf(result)
-}
 
 private fun wrapError(exception: Throwable): List<Any?> {
-  if (exception is FlutterError) {
-    return listOf(
+  return if (exception is FlutterError) {
+    listOf(
       exception.code,
       exception.message,
       exception.details
     )
   } else {
-    return listOf(
+    listOf(
       exception.javaClass.simpleName,
-      exception.toString(),
+      exception.message,
       "Cause: " + exception.cause + ", Stacktrace: " + Log.getStackTraceString(exception)
     )
   }
@@ -45,11 +39,11 @@ class FlutterError (
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface AndroidCameraDetectorApi {
-  fun hasAvailableCamera(callback: (Result<Boolean>) -> Unit)
+  fun hasAvailableCamera(): Boolean
 
   companion object {
     /** The codec used by AndroidCameraDetectorApi. */
-    val codec: MessageCodec<Any?> by lazy {
+    private val codec: MessageCodec<Any?> by lazy {
       StandardMessageCodec()
     }
     /** Sets up an instance of `AndroidCameraDetectorApi` to handle messages through the `binaryMessenger`. */
@@ -59,15 +53,12 @@ interface AndroidCameraDetectorApi {
         val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.android_camera_detector.AndroidCameraDetectorApi.hasAvailableCamera", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
-            api.hasAvailableCamera() { result: Result<Boolean> ->
-              val error = result.exceptionOrNull()
-              if (error != null) {
-                reply.reply(wrapError(error))
-              } else {
-                val data = result.getOrNull()
-                reply.reply(wrapResult(data))
-              }
+            val wrapped: List<Any?> = try {
+              listOf<Any?>(api.hasAvailableCamera())
+            } catch (exception: Throwable) {
+              wrapError(exception)
             }
+            reply.reply(wrapped)
           }
         } else {
           channel.setMessageHandler(null)

@@ -8,26 +8,21 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 class AndroidCameraDetectorPlugin: FlutterPlugin, ActivityAware {
 
   private var activityPluginBinding: ActivityPluginBinding? = null
-  private var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding? = null
   private var androidCameraDetectorApi: AndroidCameraDetectorApiImpl? = null
 
   override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    this.flutterPluginBinding = binding
     androidCameraDetectorApi = AndroidCameraDetectorApiImpl()
     AndroidCameraDetectorApi.setUp(binding.binaryMessenger, androidCameraDetectorApi)
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    this.flutterPluginBinding = null
     AndroidCameraDetectorApi.setUp(binding.binaryMessenger, null)
     androidCameraDetectorApi = null
   }
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     activityPluginBinding = binding
-    flutterPluginBinding?.let {
-      androidCameraDetectorApi?.onActivityAttach(it, activityPluginBinding!!)
-    }
+    androidCameraDetectorApi?.onActivityAttach(activityPluginBinding!!)
   }
 
   override fun onDetachedFromActivity() {
