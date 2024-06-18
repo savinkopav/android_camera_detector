@@ -1,16 +1,16 @@
 import 'package:android_camera_detector/pigeon_detector.dart';
 
-class DetectorProvider {
+class CameraDetectorProvider {
 
-  static final DetectorProvider instance = DetectorProvider._();
+  static final CameraDetectorProvider instance = CameraDetectorProvider._();
 
-  factory DetectorProvider() {
+  factory CameraDetectorProvider() {
     return instance;
   }
 
   late AndroidCameraDetectorApi _androidCameraDetectorApi;
 
-  DetectorProvider._() {
+  CameraDetectorProvider._() {
     _androidCameraDetectorApi = AndroidCameraDetectorApi();
   }
 

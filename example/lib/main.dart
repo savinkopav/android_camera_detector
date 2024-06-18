@@ -55,7 +55,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  final _detectorProvider = DetectorProvider();
+  final _detectorProvider = CameraDetectorProvider();
   bool hasCamera = false;
   bool isLoading = false;
 
